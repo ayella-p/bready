@@ -31,6 +31,9 @@
         <activity
             android:name="com.example.b_ready.screens.register.RegisterActivity"
             android:exported="false" />
+        <activity
+            android:name="com.example.b_ready.screens.dashboard.DashboardActivity"
+            android:exported="false" />
 
 
 

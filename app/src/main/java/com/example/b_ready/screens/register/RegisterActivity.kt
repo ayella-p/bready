@@ -9,6 +9,7 @@ import com.example.b_ready.screens.login.LoginActivity
 import com.example.b_ready.utils.getEditTextValue
 import com.example.b_ready.utils.toast
 import com.example.b_ready.R
+import com.example.b_ready.app.CustomApp
 
 class RegisterActivity : Activity(), RegisterContract.View {
 
@@ -20,7 +21,7 @@ class RegisterActivity : Activity(), RegisterContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        presenter = RegisterPresenter(this)
+        presenter = RegisterPresenter(this, RegisterModel(application as CustomApp))
 
         findViewById<Button>(R.id.btnUploadId).setOnClickListener {
             //successful for now

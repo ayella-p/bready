@@ -6,7 +6,7 @@ import com.example.b_ready.data.User
 
 class CustomApp : Application() {
     // Hardcoded test user based on your UI mockup
-    private val testUser = User("09123456789", "1234")
+    private val testUser = User("09275256874", "1234")
 
     override fun onCreate() {
         super.onCreate()

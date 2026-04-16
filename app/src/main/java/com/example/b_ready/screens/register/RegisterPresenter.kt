@@ -1,7 +1,8 @@
 package com.example.b_ready.screens.register
 
 class RegisterPresenter(
-    private val view: RegisterContract.View
+    private val view: RegisterContract.View,
+    private val model: RegisterModel
 ) : RegisterContract.Presenter {
 
     override fun validateRegistration(mobile: String, pword: String, isIdUploaded: Boolean) {
@@ -14,6 +15,7 @@ class RegisterPresenter(
             view.showMissingIdMessage()
             return
         }
+        model.saveNewUser(mobile, pword)
         view.showSuccessMessage()
         view.navigateToLogin()
     }

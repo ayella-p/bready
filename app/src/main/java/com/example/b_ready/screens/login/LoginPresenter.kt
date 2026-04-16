@@ -2,7 +2,7 @@ package com.example.b_ready.screens.login
 
 import com.example.b_ready.app.CustomApp
 
-class LoginPresenter(private val view: LoginContract.View,private val app: CustomApp) : LoginContract.Presenter {
+class LoginPresenter(private val view: LoginContract.View,private val model: LoginModel) : LoginContract.Presenter {
 
     override fun validateCredentials(mobile: String, pword: String) {
         if (mobile.isEmpty() || pword.isEmpty()) {
@@ -10,7 +10,7 @@ class LoginPresenter(private val view: LoginContract.View,private val app: Custo
             return
         }
 
-        val savedUser = app.getUser()
+        val savedUser = model.getSavedUser()
         if (mobile == savedUser.mobileNumber && pword == savedUser.password) {
             view.showSuccessMessage()
             view.showDashboardScreen()
