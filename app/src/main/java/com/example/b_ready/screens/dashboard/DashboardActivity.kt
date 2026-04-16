@@ -49,22 +49,17 @@ class DashboardActivity : Activity(), DashboardContract.View {
     override fun displayUserName(name: String) {
        // findViewById<TextView>(R.id.tvUserName).text = name
     }
-
     override fun displayWalletBalance(balance: String) {
         // findViewById<TextView>(R.id.tvBalance).text = balance
     }
-
     override fun showToastMessage(message: String) {
         toast(message)
     }
-
-
     override fun navigateToHistory() {
         toast("Navigating to History Screen")
         // val intent = Intent(this, HistoryActivity::class.java)
         // startActivity(intent)
     }
-
     override fun navigateToProfile() {
         toast("Navigating to Profile Screen")
     }
