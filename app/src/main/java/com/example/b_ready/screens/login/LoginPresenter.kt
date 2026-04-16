@@ -2,7 +2,8 @@ package com.example.b_ready.screens.login
 
 import com.example.b_ready.app.CustomApp
 
-class LoginPresenter(private val view: LoginContract.View,private val model: LoginModel) : LoginContract.Presenter {
+class LoginPresenter(private val view: LoginContract.View,
+                     private val model: LoginModel) : LoginContract.Presenter {
 
     override fun validateCredentials(mobile: String, pword: String) {
         if (mobile.isEmpty() || pword.isEmpty()) {
