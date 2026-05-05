@@ -3,7 +3,6 @@ package com.example.b_ready.utils
 import android.app.Activity
 import android.widget.EditText
 import android.widget.Toast
-
 fun Activity.getEditTextValue(id: Int): String {
     return findViewById<EditText>(id).text.toString()
 }

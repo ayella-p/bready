@@ -35,6 +35,10 @@
             android:name="com.example.b_ready.screens.dashboard.DashboardActivity"
             android:exported="false" />
 
+        <activity
+            android:name="com.example.b_ready.screens.history.HistoryActivity"
+            android:exported="false" />
+
 
 
     </application>

@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.b_ready.R
 import com.example.b_ready.app.CustomApp
+import com.example.b_ready.screens.history.HistoryActivity
 import com.example.b_ready.utils.toast
 
 class DashboardActivity : Activity(), DashboardContract.View {
@@ -61,8 +62,8 @@ class DashboardActivity : Activity(), DashboardContract.View {
 
     override fun navigateToHistory() {
         toast("Navigating to History Screen")
-        // val intent = Intent(this, HistoryActivity::class.java)
-        // startActivity(intent)
+         val intent = Intent(this, HistoryActivity::class.java)
+         startActivity(intent)
     }
 
     override fun navigateToProfile() {
