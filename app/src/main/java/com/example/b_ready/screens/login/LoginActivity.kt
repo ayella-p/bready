@@ -18,7 +18,9 @@ class LoginActivity : Activity(), LoginContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        presenter = LoginPresenter(this, LoginModel(application as CustomApp))
+
+        val dbHelper = com.example.b_ready.db.DatabaseHelper(this)
+        presenter = LoginPresenter(this, LoginModel(application as CustomApp, dbHelper))
         findViewById<Button>(R.id.btnSignIn).setOnClickListener {
             val mobileInput = getEditTextValue(R.id.etMobileNumber)
             val passwordInput = getEditTextValue(R.id.etPassword)
@@ -33,15 +35,24 @@ class LoginActivity : Activity(), LoginContract.View {
     override fun showEmptyMessage() {
         toast("Please enter your mobile number and password")
     }
-    override fun showSuccessMessage() {
-        toast("Welcome back to B-Ready!")
+    override fun showSuccessMessage(role: String) {
+        toast("Welcome! Logged in as $role")
     }
-    override fun showInvalidCredential() {
-        toast("Invalid Mobile Number or Password")
-    }
-    override fun showDashboardScreen() {
+
+    override fun showResidentDashboard() {
         val intent = Intent(this, DashboardActivity::class.java)
         startActivity(intent)
         finish()
     }
+
+    override fun showAdminDashboard() {
+        toast("Redirecting to Admin Panel...")
+        // val intent = Intent(this, AdminDashboardActivity::class.java)
+        // startActivity(intent)
+        // finish()
+    }
+    override fun showInvalidCredential() {
+        toast("Invalid Mobile Number or Password")
+    }
+
 }

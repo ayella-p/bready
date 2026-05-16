@@ -1,21 +1,33 @@
 package com.example.b_ready.screens.login
 
-import com.example.b_ready.app.CustomApp
+class LoginPresenter(
+    private val view: LoginContract.View,
+    private val model: LoginModel
+) : LoginContract.Presenter {
 
-class LoginPresenter(private val view: LoginContract.View,
-                     private val model: LoginModel) : LoginContract.Presenter {
-
-    override fun validateCredentials(mobile: String, pword: String) {
-        if (mobile.isEmpty() || pword.isEmpty()) {
+    override fun validateCredentials(username: String, pword: String) {
+        if (username.isEmpty() || pword.isEmpty()) {
             view.showEmptyMessage()
             return
         }
 
-        val savedUser = model.getSavedUser()
-        if (mobile == savedUser.mobileNumber && pword == savedUser.password) {
-            view.showSuccessMessage()
-            view.showDashboardScreen()
+        // 1. Ask the Model to check the Database
+        val user = model.attemptLogin(username, pword)
+
+        // 2. Decide what to do
+        if (user != null) {
+            // Login Success!
+            model.saveSession(user) // Save them to CustomApp
+            view.showSuccessMessage(user.role)
+
+            // Route based on role
+            if (user.role == "Admin") {
+                view.showAdminDashboard()
+            } else {
+                view.showResidentDashboard()
+            }
         } else {
+            // Login Failed
             view.showInvalidCredential()
         }
     }

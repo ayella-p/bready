@@ -8,6 +8,7 @@ import android.widget.ListView
 import android.widget.TextView
 import com.example.b_ready.R
 import com.example.b_ready.data.Transaction
+import com.example.b_ready.db.DatabaseHelper
 import com.example.b_ready.utils.TransactionAdapter
 import com.example.b_ready.utils.toast
 
@@ -18,8 +19,8 @@ class HistoryActivity : Activity(), HistoryContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
-
-        presenter = HistoryPresenter(this, HistoryModel())
+        val dbHelper = DatabaseHelper(this)
+        presenter = HistoryPresenter(this, HistoryModel(dbHelper))
         presenter.loadHistoryData()
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             presenter.onBackClicked()

@@ -5,15 +5,26 @@ import android.util.Log
 import com.example.b_ready.data.User
 
 class CustomApp : Application() {
-    // Hardcoded test user based on your UI mockup
-    private val testUser = User("09275256874", "1234")
+    // This starts as null. It only gets filled when someone successfully logs in.
+    private var currentUser: User? = null
 
     override fun onCreate() {
         super.onCreate()
-        Log.e("B-Ready", "CustomApp onCreate is called - App Started")
+        Log.e("B-Ready", "CustomApp Started")
     }
 
-    fun getUser(): User {
-        return this.testUser
+    // call this when they log in
+    fun setCurrentUser(user: User) {
+        this.currentUser = user
+    }
+
+    // call this from the Dashboard to know who is logged in
+    fun getCurrentUser(): User? {
+        return this.currentUser
+    }
+
+    // call this for Logout
+    fun clearUser() {
+        this.currentUser = null
     }
 }
