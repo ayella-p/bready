@@ -1,4 +1,4 @@
-package com.example.b_ready.screens.dashboard
+package com.example.b_ready.screens.resident.dashboard
 
 
 class DashboardContract {

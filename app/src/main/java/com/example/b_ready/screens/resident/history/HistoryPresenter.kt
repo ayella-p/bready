@@ -1,4 +1,4 @@
-package com.example.b_ready.screens.history
+package com.example.b_ready.screens.resident.history
 class HistoryPresenter(
     private val view: HistoryContract.View,
     private val model: HistoryModel

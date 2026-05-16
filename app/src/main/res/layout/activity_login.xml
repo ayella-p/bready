@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Mobile Number"
+        android:text="Username"
         android:textColor="#1B3A6D"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -59,8 +59,8 @@
         android:layout_height="55dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/edittext_border"
-        android:hint="+63 912 345 6789"
-        android:inputType="phone"
+        android:hint="Enter Username"
+        android:inputType="text"
         android:padding="16dp"
         android:textSize="14sp" />
 
@@ -89,7 +89,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="40dp"
-        android:backgroundTint="#FF7043"
+        android:background="@drawable/bg_rounded_orange"
+        app:backgroundTint="@null"
         android:text="Sign In"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
@@ -106,24 +107,7 @@
         android:textColor="#1B3A6D"
         android:textSize="14sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="24dp"
-        android:background="#E0E0E0" />
 
-    <Button
-        android:id="@+id/btnAdminLogin"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="#1B3A6D"
-        android:text="Login as Admin/Official"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp" />
 
 </LinearLayout>
 </ScrollView>

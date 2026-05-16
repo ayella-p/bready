@@ -28,15 +28,19 @@
             android:name="com.example.b_ready.screens.login.LoginActivity"
             android:exported="false" >
         </activity>
+s
         <activity
+            android:name="com.example.b_ready.screens.admin.dashboard.AdminDashboardActivity"
+            android:exported="false" >
+        </activity>        <activity
             android:name="com.example.b_ready.screens.register.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.b_ready.screens.dashboard.DashboardActivity"
+            android:name="com.example.b_ready.screens.resident.dashboard.DashboardActivity"
             android:exported="false" />
 
         <activity
-            android:name="com.example.b_ready.screens.history.HistoryActivity"
+            android:name="com.example.b_ready.screens.resident.history.HistoryActivity"
             android:exported="false" />
 
 

@@ -1,15 +1,14 @@
-package com.example.b_ready.screens.dashboard
+package com.example.b_ready.screens.resident.dashboard
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.b_ready.R
 import com.example.b_ready.app.CustomApp
-import com.example.b_ready.screens.history.HistoryActivity
+import com.example.b_ready.screens.resident.history.HistoryActivity
 import com.example.b_ready.utils.toast
 
 class DashboardActivity : Activity(), DashboardContract.View {
@@ -18,7 +17,7 @@ class DashboardActivity : Activity(), DashboardContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
+        setContentView(R.layout.activity_resident_dashboard)
 
         presenter = DashboardPresenter(this, DashboardModel(application as CustomApp))
 

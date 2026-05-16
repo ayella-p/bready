@@ -1,4 +1,4 @@
-package com.example.b_ready.screens.history
+package com.example.b_ready.screens.resident.history
 
 import android.app.Activity
 import android.os.Bundle
@@ -18,7 +18,7 @@ class HistoryActivity : Activity(), HistoryContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history)
+        setContentView(R.layout.activity_resident_history)
         val dbHelper = DatabaseHelper(this)
         presenter = HistoryPresenter(this, HistoryModel(dbHelper))
         presenter.loadHistoryData()

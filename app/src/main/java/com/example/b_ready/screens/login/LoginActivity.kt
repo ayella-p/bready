@@ -7,7 +7,8 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.b_ready.R
 import com.example.b_ready.app.CustomApp
-import com.example.b_ready.screens.dashboard.DashboardActivity
+import com.example.b_ready.screens.admin.dashboard.AdminDashboardActivity
+import com.example.b_ready.screens.resident.dashboard.DashboardActivity
 import com.example.b_ready.screens.register.RegisterActivity
 import com.example.b_ready.utils.getEditTextValue
 import com.example.b_ready.utils.toast
@@ -47,9 +48,9 @@ class LoginActivity : Activity(), LoginContract.View {
 
     override fun showAdminDashboard() {
         toast("Redirecting to Admin Panel...")
-        // val intent = Intent(this, AdminDashboardActivity::class.java)
-        // startActivity(intent)
-        // finish()
+         val intent = Intent(this, AdminDashboardActivity::class.java)
+         startActivity(intent)
+         finish()
     }
     override fun showInvalidCredential() {
         toast("Invalid Mobile Number or Password")

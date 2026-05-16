@@ -1,4 +1,4 @@
-package com.example.b_ready.screens.history
+package com.example.b_ready.screens.resident.history
 
 import com.example.b_ready.data.Transaction
 

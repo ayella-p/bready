@@ -1,4 +1,4 @@
-package com.example.b_ready.screens.dashboard
+package com.example.b_ready.screens.resident.dashboard
 
 import com.example.b_ready.app.CustomApp
 
@@ -10,7 +10,7 @@ class DashboardPresenter(
     override fun loadDashboardData() {
         val currentUser = model.getCurrentUser()
         val currentBalance = model.getWalletBalance()
-        view.displayUserName("Juan Santos")
+        val displayName = currentUser?.username ?: "Guest"
         view.displayWalletBalance(currentBalance)
     }
 
