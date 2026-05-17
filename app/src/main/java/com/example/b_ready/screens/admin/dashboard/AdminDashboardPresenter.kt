@@ -22,5 +22,17 @@ class AdminDashboardPresenter(
         view.displayRecentDistributions(model.getRecentDistributions())
     }
 
+    override fun onScannerTabClicked() {
+        view.navigateToScanner()
+    }
+
+    override fun onInventoryTabClicked() {
+        view.navigateToInventory()
+    }
+
+    override fun onHistoryTabClicked() {
+        view.navigateToHistory()
+    }
+
 
 }

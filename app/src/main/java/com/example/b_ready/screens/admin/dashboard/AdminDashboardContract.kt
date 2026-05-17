@@ -7,8 +7,14 @@ class AdminDashboardContract {
         fun updateProgress(percent: Int, distributed: Int, remaining: Int)
         fun displayInventory(items: List<InventoryItem>)
         fun displayRecentDistributions(distributions: List<RecentDistribution>)
+        fun navigateToScanner()
+        fun navigateToInventory()
+        fun navigateToHistory()
     }
     interface Presenter {
         fun loadAdminData()
+        fun onScannerTabClicked()
+        fun onInventoryTabClicked()
+        fun onHistoryTabClicked()
     }
 }
