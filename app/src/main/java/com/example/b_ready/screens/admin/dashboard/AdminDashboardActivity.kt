@@ -13,6 +13,7 @@ import com.example.b_ready.R
 import com.example.b_ready.data.InventoryItem
 import com.example.b_ready.data.RecentDistribution
 import com.example.b_ready.db.DatabaseHelper
+import com.example.b_ready.screens.admin.inventory.AdminInventoryActivity
 import com.example.b_ready.screens.resident.history.HistoryActivity
 import com.example.b_ready.utils.RecentDistributionAdapter
 import com.example.b_ready.utils.toast
@@ -84,9 +85,9 @@ class AdminDashboardActivity : Activity(), AdminDashboardContract.View {
     override fun navigateToInventory() {
         toast("Opening Inventory Management...")
         // Uncomment when you build the Inventory screen:
-        // val intent = Intent(this, AdminInventoryActivity::class.java)
-        // startActivity(intent)
-        // finish()
+         val intent = Intent(this, AdminInventoryActivity::class.java)
+         startActivity(intent)
+         finish()
     }
 
     override fun navigateToHistory() {

@@ -28,6 +28,10 @@
             android:name="com.example.b_ready.screens.login.LoginActivity"
             android:exported="false" >
         </activity>
+        <activity
+            android:name="com.example.b_ready.screens.admin.inventory.AdminInventoryActivity"
+            android:exported="false" >
+        </activity>
 s
         <activity
             android:name="com.example.b_ready.screens.admin.dashboard.AdminDashboardActivity"

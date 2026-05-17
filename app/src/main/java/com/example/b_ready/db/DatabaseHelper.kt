@@ -13,7 +13,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "BReady.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 6
 
         //transaction table
         const val TABLE_TRANSACTIONS = "transactions"
@@ -36,6 +36,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_INV_NAME = "name"
         const val COL_INV_CURRENT = "current_stock"
         const val COL_INV_MAX = "max_stock"
+        const val COL_INV_UNIT = "unit"
 
         // --- DISTRIBUTIONS TABLE (For the Admin List) ---
         const val TABLE_DISTRIBUTIONS = "admin_distributions"
@@ -64,11 +65,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL(createUsersTable)
 
         // create inventory table
+
         val createInventoryTable = ("CREATE TABLE $TABLE_INVENTORY ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "$COL_INV_NAME TEXT,"
                 + "$COL_INV_CURRENT INTEGER,"
-                + "$COL_INV_MAX INTEGER" + ")")
+                + "$COL_INV_MAX INTEGER,"
+                + "$COL_INV_UNIT TEXT" + ")")
         db.execSQL(createInventoryTable)
 
         val createDistTable = ("CREATE TABLE $TABLE_DISTRIBUTIONS ("
@@ -85,6 +88,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_TRANSACTIONS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_INVENTORY")       // ADDED THIS
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_DISTRIBUTIONS")
         onCreate(db)
     }
 
@@ -143,15 +148,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
 
         val inventoryData = listOf(
-            InventoryItem("Rice (5kg)", 340, 500),
-            InventoryItem("Canned Goods", 125, 600),
-            InventoryItem("Cooking Oil", 280, 400)
+            InventoryItem(1, "Rice (5kg)", 340, 500, "bags"),
+            InventoryItem(2, "Canned Goods", 125, 600, "canned" ),
+            InventoryItem(3, "Cooking Oil", 280, 400, "bottle")
         )
         for (item in inventoryData) {
             val v = ContentValues()
             v.put(COL_INV_NAME, item.name)
             v.put(COL_INV_CURRENT, item.currentStock)
             v.put(COL_INV_MAX, item.maxStock)
+            v.put(COL_INV_UNIT, item.unit)
             db.insert(TABLE_INVENTORY, null, v)
         }
 
@@ -168,6 +174,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             v.put(COL_DIST_STATUS, dist.status)
             db.insert(TABLE_DISTRIBUTIONS, null, v)
         }
+
+
     }
 
     fun getAllTransactions(): List<Transaction> {
@@ -196,12 +204,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun getInventory(): List<InventoryItem> {
         val list = ArrayList<InventoryItem>()
         val cursor = this.readableDatabase.rawQuery("SELECT * FROM $TABLE_INVENTORY", null)
+
         if (cursor.moveToFirst()) {
             do {
                 list.add(InventoryItem(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(COL_INV_NAME)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_INV_CURRENT)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_INV_MAX))
+                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_INV_MAX)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COL_INV_UNIT))
                 ))
             } while (cursor.moveToNext())
         }
@@ -223,5 +234,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         cursor.close()
         return list
+    }
+
+    fun updateInventoryStock(itemId: Int, newStock: Int): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(COL_INV_CURRENT, newStock)
+
+        val result = db.update(TABLE_INVENTORY, values, "$COL_ID=?", arrayOf(itemId.toString()))
+        db.close()
+        return result > 0
     }
 }
