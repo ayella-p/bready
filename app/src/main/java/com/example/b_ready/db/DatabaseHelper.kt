@@ -200,6 +200,28 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return transactionList
     }
+    fun insertDistribution(residentName: String, details: String, status: String): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(COL_DIST_NAME, residentName)
+        values.put(COL_DIST_DETAILS, details)
+        values.put(COL_DIST_STATUS, status)
+
+        val result = db.insert(TABLE_DISTRIBUTIONS, null, values)
+        db.close()
+        return result != -1L
+    }
+
+    fun getTodayVerificationCount(): Int {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_DISTRIBUTIONS", null)
+        var count = 0
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0)
+        }
+        cursor.close()
+        return count
+    }
 
     fun getInventory(): List<InventoryItem> {
         val list = ArrayList<InventoryItem>()

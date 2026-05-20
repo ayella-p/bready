@@ -1,13 +1,16 @@
 package com.example.b_ready.screens.admin.inventory
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.b_ready.R
 import com.example.b_ready.data.InventoryItem
 import com.example.b_ready.db.DatabaseHelper
+import com.example.b_ready.screens.admin.dashboard.AdminDashboardActivity
 import com.example.b_ready.utils.InventoryAdapter
 import com.example.b_ready.utils.toast
 
@@ -23,8 +26,9 @@ class AdminInventoryActivity : Activity(), AdminInventoryContract.View {
         presenter = AdminInventoryPresenter(this, AdminInventoryModel(DatabaseHelper(this)))
 
         // Setup Back Button
-        findViewById<ImageView>(R.id.btnBack).setOnClickListener { finish() }
-
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
+            presenter.onBackButtonClicked()
+        }
         // Setup RecyclerView
         val rv = findViewById<RecyclerView>(R.id.recyclerViewInventory)
         rv.layoutManager = LinearLayoutManager(this)
@@ -45,5 +49,11 @@ class AdminInventoryActivity : Activity(), AdminInventoryContract.View {
 
     override fun showMessage(msg: String) {
         toast(msg)
+    }
+
+    override fun backtoDashboard() {
+        val intent = Intent(this, AdminDashboardActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

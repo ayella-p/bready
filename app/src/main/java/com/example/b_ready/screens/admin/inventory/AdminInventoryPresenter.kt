@@ -21,4 +21,9 @@ class AdminInventoryPresenter(
             view.showMessage("Error: Cannot deduct more than current stock.")
         }
     }
+
+
+    override fun onBackButtonClicked() {
+        view.backtoDashboard()
+    }
 }

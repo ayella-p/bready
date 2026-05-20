@@ -32,7 +32,7 @@
             android:name="com.example.b_ready.screens.admin.inventory.AdminInventoryActivity"
             android:exported="false" >
         </activity>
-s
+
         <activity
             android:name="com.example.b_ready.screens.admin.dashboard.AdminDashboardActivity"
             android:exported="false" >
@@ -46,7 +46,10 @@ s
         <activity
             android:name="com.example.b_ready.screens.resident.history.HistoryActivity"
             android:exported="false" />
-
+        <activity android:name="com.example.b_ready.screens.admin.scanner.AdminScannerActivity"
+            android:exported="false"/>
+        <activity android:name="com.example.b_ready.screens.admin.history.AdminHistoryActivity"
+            android:exported="false"/>
 
 
     </application>

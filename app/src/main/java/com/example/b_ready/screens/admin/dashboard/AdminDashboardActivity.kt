@@ -3,6 +3,7 @@ package com.example.b_ready.screens.admin.dashboard
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -13,7 +14,9 @@ import com.example.b_ready.R
 import com.example.b_ready.data.InventoryItem
 import com.example.b_ready.data.RecentDistribution
 import com.example.b_ready.db.DatabaseHelper
+import com.example.b_ready.screens.admin.history.AdminHistoryActivity
 import com.example.b_ready.screens.admin.inventory.AdminInventoryActivity
+import com.example.b_ready.screens.admin.scanner.AdminScannerActivity
 import com.example.b_ready.screens.resident.history.HistoryActivity
 import com.example.b_ready.utils.RecentDistributionAdapter
 import com.example.b_ready.utils.toast
@@ -27,21 +30,38 @@ class AdminDashboardActivity : Activity(), AdminDashboardContract.View {
         setContentView(R.layout.activity_admin_dashboard)
 
         presenter = AdminDashboardPresenter(this, AdminDashboardModel(DatabaseHelper(this)))
-        presenter.loadAdminData()
+
         findViewById<LinearLayout>(R.id.tabAdminScanner).setOnClickListener {
             presenter.onScannerTabClicked()
         }
 
+        findViewById<Button>(R.id.scanButton).setOnClickListener {
+            presenter.onScannerTabClicked()
+        }
         findViewById<LinearLayout>(R.id.tabAdminInventory).setOnClickListener {
+            presenter.onInventoryTabClicked()
+        }
+
+        findViewById<Button>(R.id.inventoryButton).setOnClickListener {
             presenter.onInventoryTabClicked()
         }
 
         findViewById<LinearLayout>(R.id.tabAdminHistory).setOnClickListener {
             presenter.onHistoryTabClicked()
         }
+        findViewById<LinearLayout>(R.id.containerInventory).setOnClickListener {
+            presenter.onInventoryTabClicked()
+        }
+
+        findViewById<TextView>(R.id.manageText).setOnClickListener {
+            presenter.onInventoryTabClicked()
+        }
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        presenter.loadAdminData()
+    }
     override fun updateProgress(percent: Int, distributed: Int, remaining: Int) {
         findViewById<TextView>(R.id.tvPercent).text = "$percent%"
         findViewById<TextView>(R.id.tvDist).text = "Distributed: $distributed"
@@ -75,11 +95,9 @@ class AdminDashboardActivity : Activity(), AdminDashboardContract.View {
         recyclerView.adapter = RecentDistributionAdapter(distributions)
     }
     override fun navigateToScanner() {
-        toast("Opening QR Scanner...")
-        // Uncomment when you build the Scanner screen:
-        // val intent = Intent(this, ScannerActivity::class.java)
-        // startActivity(intent)
-        // finish() // Optional: Use finish() if you don't want them pressing "Back" to return here
+
+         val intent = Intent(this, AdminScannerActivity::class.java)
+         startActivity(intent)
     }
 
     override fun navigateToInventory() {
@@ -87,14 +105,12 @@ class AdminDashboardActivity : Activity(), AdminDashboardContract.View {
         // Uncomment when you build the Inventory screen:
          val intent = Intent(this, AdminInventoryActivity::class.java)
          startActivity(intent)
-         finish()
     }
 
     override fun navigateToHistory() {
         toast("Opening Admin History...")
-        // Uncomment when you build the History screen:
-        // val intent = Intent(this, AdminHistoryActivity::class.java)
-        // startActivity(intent)
-        // finish()
+         val intent = Intent(this, AdminHistoryActivity::class.java)
+         startActivity(intent)
+         finish()
     }
 }
