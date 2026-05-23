@@ -43,6 +43,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_DIST_NAME = "resident_name"
         const val COL_DIST_DETAILS = "details"
         const val COL_DIST_STATUS = "status"
+
+        const val TABLE_EQUIPMENT = "equipment"
+        const val COL_EQ_ID = "eq_id"
+        const val COL_EQ_NAME = "eq_name"
+        const val COL_EQ_DEPOSIT = "eq_deposit"
+        const val COL_EQ_AVAILABLE = "eq_available"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -81,6 +87,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COL_DIST_STATUS TEXT" + ")")
         db.execSQL(createDistTable)
 
+        val createEquipmentTable = ("CREATE TABLE $TABLE_EQUIPMENT ("
+                + "$COL_EQ_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "$COL_EQ_NAME TEXT,"
+                + "$COL_EQ_DEPOSIT TEXT,"
+                + "$COL_EQ_AVAILABLE INTEGER" + ")")
+        db.execSQL(createEquipmentTable)
         // insert default data
         insertInitialData(db)
     }
@@ -88,8 +100,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_TRANSACTIONS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_INVENTORY")       // ADDED THIS
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_INVENTORY")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_DISTRIBUTIONS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_EQUIPMENT")
         onCreate(db)
     }
 
@@ -174,10 +187,70 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             v.put(COL_DIST_STATUS, dist.status)
             db.insert(TABLE_DISTRIBUTIONS, null, v)
         }
+        val equipmentData = listOf(
+            ContentValues().apply { put(COL_EQ_NAME, "Event Tent (10x10)"); put(COL_EQ_DEPOSIT, "₱500"); put(COL_EQ_AVAILABLE, 3) },
+            ContentValues().apply { put(COL_EQ_NAME, "Plastic Chairs (Set of 50)"); put(COL_EQ_DEPOSIT, "₱200"); put(COL_EQ_AVAILABLE, 8) },
+            ContentValues().apply { put(COL_EQ_NAME, "Sound System"); put(COL_EQ_DEPOSIT, "₱1000"); put(COL_EQ_AVAILABLE, 1) },
+            ContentValues().apply { put(COL_EQ_NAME, "Folding Tables (Set of 10)"); put(COL_EQ_DEPOSIT, "₱300"); put(COL_EQ_AVAILABLE, 5) }
+        )
+        for (row in equipmentData) {
+            db.insert(TABLE_EQUIPMENT, null, row)
+        }
 
 
     }
+    fun getAvailableEquipment(): List<ContentValues> {
+        val list = ArrayList<ContentValues>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_EQUIPMENT", null)
+        if (cursor.moveToFirst()) {
+            do {
+                val cv = ContentValues()
+                cv.put("id", cursor.getInt(cursor.getColumnIndexOrThrow(COL_EQ_ID)))
+                cv.put("name", cursor.getString(cursor.getColumnIndexOrThrow(COL_EQ_NAME)))
+                cv.put("deposit", cursor.getString(cursor.getColumnIndexOrThrow(COL_EQ_DEPOSIT)))
+                cv.put("available", cursor.getInt(cursor.getColumnIndexOrThrow(COL_EQ_AVAILABLE)))
+                list.add(cv)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
+    }
 
+    // Handles the reservation system math
+    fun reserveEquipmentItem(itemId: Int, name: String, deposit: String, dateStr: String): Boolean {
+        val db = this.writableDatabase
+
+        // Check current remaining availability counts
+        val cursor = db.rawQuery("SELECT $COL_EQ_AVAILABLE FROM $TABLE_EQUIPMENT WHERE $COL_EQ_ID = ?", arrayOf(itemId.toString()))
+        var currentAvailable = 0
+        if (cursor.moveToFirst()) {
+            currentAvailable = cursor.getInt(0)
+        }
+        cursor.close()
+
+        if (currentAvailable <= 0) {
+            db.close()
+            return false // None left!
+        }
+
+        // Deduct 1 item count from the equipment inventory table
+        val updateValues = ContentValues()
+        updateValues.put(COL_EQ_AVAILABLE, currentAvailable - 1)
+        db.update(TABLE_EQUIPMENT, updateValues, "$COL_EQ_ID = ?", arrayOf(itemId.toString()))
+
+        // Inject this item directly into the ledger transactions history table for Admin tracking
+        val txValues = ContentValues()
+        txValues.put(COL_TITLE, "$name Reserved")
+        txValues.put(COL_DATE, dateStr)
+        txValues.put(COL_STATUS, "Paid")
+        txValues.put(COL_PRICE, deposit)
+        txValues.put(COL_IS_RELIEF, 0) // marked as 0 (Booking category item)
+        db.insert(TABLE_TRANSACTIONS, null, txValues)
+
+        db.close()
+        return true
+    }
     fun getAllTransactions(): List<Transaction> {
         val transactionList = ArrayList<Transaction>()
         val db = this.readableDatabase
@@ -199,6 +272,38 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         cursor.close()
         return transactionList
+    }
+    fun getResidentNameByCode(code: String): String {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $COL_USERNAME FROM $TABLE_USERS", null)
+        var foundName = "Resident ($code)" // default fallback if no match
+
+        if (cursor.moveToFirst()) {
+            do {
+                val username = cursor.getString(0)
+                // Apply our signature extraction rule: match digits or default to 7777
+                val digits = username.filter { it.isDigit() }
+                val calculatedCode = if (digits.isNotEmpty()) digits else "7777"
+
+                // If the code typed matches the user's generated code, capture their real username!
+                if (calculatedCode == code || username.equals(code, ignoreCase = true)) {
+                    foundName = username
+                    break
+                }
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return foundName
+    }
+    fun isResidentIdClaimed(claimId: String): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM $TABLE_DISTRIBUTIONS WHERE $COL_DIST_DETAILS LIKE ? AND $COL_DIST_STATUS = ?",
+            arrayOf("%$claimId%", "Verified")
+        )
+        val claimed = cursor.count > 0
+        cursor.close()
+        return claimed
     }
     fun insertDistribution(residentName: String, details: String, status: String): Boolean {
         val db = this.writableDatabase

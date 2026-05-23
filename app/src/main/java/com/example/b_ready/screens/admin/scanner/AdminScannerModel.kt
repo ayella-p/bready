@@ -24,16 +24,11 @@ class AdminScannerModel(private val dbHelper: DatabaseHelper) {
         val displayDetails = "$formattedId • $currentTime"
 
         // 3. For MVP presentation, simulate a resident's name based on the ID input
-        val simulatedResidentName = when (claimId) {
-            "1234" -> "Juan Santos"
-            "0987" -> "Maria Cruz"
-            "5432" -> "Pedro Reyes"
-            else -> "Resident ($claimId)" // Fallback name for any other random code typed
-        }
+        val realResidentName = dbHelper.getResidentNameByCode(claimId)
 
         // 4. Save directly into the shared database table!
         return dbHelper.insertDistribution(
-            residentName = simulatedResidentName,
+            residentName = realResidentName,
             details = displayDetails,
             status = "Verified"
         )

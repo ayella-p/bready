@@ -5,37 +5,30 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.example.b_ready.R
+import com.example.b_ready.db.DatabaseHelper
 import com.example.b_ready.screens.login.LoginActivity
 import com.example.b_ready.utils.getEditTextValue
 import com.example.b_ready.utils.toast
-import com.example.b_ready.R
-import com.example.b_ready.app.CustomApp
 
 class RegisterActivity : Activity(), RegisterContract.View {
 
     private lateinit var presenter: RegisterPresenter
 
-    private var isIdUploaded = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        presenter = RegisterPresenter(this, RegisterModel(application as CustomApp))
-
-        findViewById<Button>(R.id.btnUploadId).setOnClickListener {
-            //successful for now
-            isIdUploaded = true
-            (it as Button).text = "ID Uploaded Successfully"
-            it.setTextColor(android.graphics.Color.parseColor("#4CAF50")) // Turn text green
-            toast("ID Attached")
-        }
+        // Instantiate the model with your real DatabaseHelper context
+        val dbHelper = DatabaseHelper(this)
+        presenter = RegisterPresenter(this, RegisterModel(dbHelper))
 
         findViewById<Button>(R.id.btnCreateAccount).setOnClickListener {
-            val mobileInput = getEditTextValue(R.id.etRegMobileNumber)
+            val usernameInput = getEditTextValue(R.id.etRegUsername)
             val passwordInput = getEditTextValue(R.id.etRegPassword)
+            val residentIdInput = getEditTextValue(R.id.etRegResidentId)
 
-            presenter.validateRegistration(mobileInput, passwordInput, isIdUploaded)
+            presenter.validateRegistration(usernameInput, passwordInput, residentIdInput)
         }
 
         findViewById<TextView>(R.id.tvSignIn).setOnClickListener {
@@ -43,12 +36,16 @@ class RegisterActivity : Activity(), RegisterContract.View {
         }
     }
 
-    override fun showEmptyMessage() {
-        toast("Please fill in your mobile number and password.")
+    override fun showEmptyFieldsMessage() {
+        toast("Please fill in all layout fields.")
     }
 
-    override fun showMissingIdMessage() {
-        toast("Please upload a valid Resident ID.")
+    override fun showInvalidIdMessage() {
+        toast("Invalid ID format! Must start with 'BR-' (e.g. BR-1234)")
+    }
+
+    override fun showUsernameTakenMessage() {
+        toast("Username is already taken! Please pick a different one.")
     }
 
     override fun showSuccessMessage() {

@@ -7,7 +7,7 @@ class HistoryModel(private val dbHelper: DatabaseHelper) {
 
     // This is the magic of MVP. The Presenter doesn't care where the data comes from.
     // We just swapped the dummy list for a real database call, and the Presenter won't even notice!
-    fun getTransactions(): List<Transaction> {
+    fun getAllTransactions(): List<Transaction> {
         return dbHelper.getAllTransactions()
     }
 }

@@ -5,18 +5,24 @@ class RegisterPresenter(
     private val model: RegisterModel
 ) : RegisterContract.Presenter {
 
-    override fun validateRegistration(mobile: String, pword: String, isIdUploaded: Boolean) {
-        if (mobile.isEmpty() || pword.isEmpty()) {
-            view.showEmptyMessage()
+    override fun validateRegistration(username: String, pword: String, residentId: String) {
+        if (username.isEmpty() || pword.isEmpty() || residentId.isEmpty()) {
+            view.showEmptyFieldsMessage()
             return
         }
 
-        if (!isIdUploaded) {
-            view.showMissingIdMessage()
+        if (!model.isValidResidentId(residentId)) {
+            view.showInvalidIdMessage()
             return
         }
-        model.saveNewUser(mobile, pword)
-        view.showSuccessMessage()
-        view.navigateToLogin()
+
+        val isSaved = model.createResidentAccount(username, pword)
+
+        if (isSaved) {
+            view.showSuccessMessage()
+            view.navigateToLogin()
+        } else {
+            view.showUsernameTakenMessage()
+        }
     }
 }

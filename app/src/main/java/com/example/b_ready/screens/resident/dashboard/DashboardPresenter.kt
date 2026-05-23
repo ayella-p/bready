@@ -1,18 +1,10 @@
 package com.example.b_ready.screens.resident.dashboard
 
-import com.example.b_ready.app.CustomApp
-
 class DashboardPresenter(
     private val view: DashboardContract.View,
     private val model: DashboardModel
 ) : DashboardContract.Presenter {
 
-    override fun loadDashboardData() {
-        val currentUser = model.getCurrentUser()
-        val currentBalance = model.getWalletBalance()
-        val displayName = currentUser?.username ?: "Guest"
-        view.displayWalletBalance(currentBalance)
-    }
 
 
     override fun onHistoryTabClicked() {
@@ -34,5 +26,19 @@ class DashboardPresenter(
 
     override fun onBorrowEquipmentClicked() {
         view.showBorrowEquipmentScreen()
+    }
+    override fun loadDashboardData() {
+        val currentUser = model.getCurrentUser()
+        val currentBalance = model.getWalletBalance()
+        val displayName = currentUser?.username ?: "Guest"
+
+        view.displayUserName(displayName)
+        view.displayWalletBalance(currentBalance)
+
+        if (currentUser != null && model.checkReliefClaimStatus(currentUser.username)) {
+            view.setReliefCardToClaimedState()
+        } else {
+            view.setReliefCardToDefaultState() // 💡 NEW: Ensures unverified users see orange
+        }
     }
 }

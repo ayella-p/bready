@@ -2,13 +2,14 @@ package com.example.b_ready.screens.register
 
 class RegisterContract {
     interface View {
-        fun showEmptyMessage()
-        fun showMissingIdMessage()
+        fun showEmptyFieldsMessage()
+        fun showInvalidIdMessage()
+        fun showUsernameTakenMessage()
         fun showSuccessMessage()
         fun navigateToLogin()
     }
 
     interface Presenter {
-        fun validateRegistration(mobile: String, pword: String, isIdUploaded: Boolean)
+        fun validateRegistration(username: String, pword: String, residentId: String)
     }
 }
